@@ -19,8 +19,9 @@ static NEW_WORLD: &[u8] = b"POPKA IS COMING FOR YOU LIL NIGGA I WILL TOUCH YOU";
 pub extern "C" fn _start() -> ! {
     use core::fmt::Write;
 
-    vga_buffer::WRITER.lock().write_str("JYIKA").unwrap();
-    write!(vga_buffer::WRITER.lock(), ", some number: {} {}", 42, 1.2);
+    print_some();
+    //vga_buffer::WRITER.lock().write_str("JYIKA").unwrap();
+    //write!(vga_buffer::WRITER.lock(), ", some number: {} {}", 42, 1.2);
 
     loop {}
 }

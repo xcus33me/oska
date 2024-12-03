@@ -1,6 +1,7 @@
 use volatile::Volatile;
 use core::fmt::{self, Write};
 use lazy_static::lazy_static;
+use spin::Mutex;
 
 const BUFFER_HEIGHT: usize = 25;
 const BUFFER_WIDTH: usize = 80;
@@ -111,11 +112,11 @@ impl fmt::Write for Writer {
 }
 
 lazy_static! {
-    pub static ref WRITER: Writer = Writer {
+    pub static ref WRITER: Mutex<Writer> = Mutex::new(Writer {
         column_position: 0,
         color_code: ColorCode::new(Color::Blue, Color::White),
         buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
-    };
+    });
 }
 
 // test function

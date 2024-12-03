@@ -17,21 +17,10 @@ static NEW_WORLD: &[u8] = b"POPKA IS COMING FOR YOU LIL NIGGA I WILL TOUCH YOU";
 
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
-    sleep(10000); // 5 SECONDS
+    use core::fmt::Write;
 
-    let vga_buffer = 0xb8000 as *mut u8;
-    for (i, &byte) in HELLO.iter().enumerate() {
-        unsafe {
-            *vga_buffer.offset(i as isize * 2) = byte;
-            *vga_buffer.offset(i as isize * 2 + 1) = 0xb1;
-        }
-    }
-
-    sleep(10000);
-
-    clear_vga_buffer();
-
-    print_some();
+    vga_buffer::WRITER.lock().write_str("JYIKA").unwrap();
+    write!(vga_buffer::WRITER.lock(), ", some number: {} {}", 42, 1.2);
 
     loop {}
 }

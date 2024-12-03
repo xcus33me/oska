@@ -119,6 +119,25 @@ lazy_static! {
     });
 }
 
+// macros
+
+#[macro_export]
+macro_rules! print {
+    ($($arg:tt)*) => (&crate::vga_buffer::_print(format_args!($($arg)*)));
+}
+
+#[macro_export]
+macro_rules! println {
+    () => ($crate::print!("\n"));
+    ($($arg:tt)*) => (&crate::print!("{}\n", format_args!($($arg)*))); 
+}
+
+#[doc(hidden)]
+pub fn _print(args: fmt::Arguments) {
+    use core::fmt::Write;
+    WRITER.lock().write_fmt(args).unwrap();
+}
+
 // test function
 pub fn print_some() {
     let mut writer = Writer {
@@ -129,4 +148,17 @@ pub fn print_some() {
 
     writer.write_string("hi! :-)");
     write!(writer, "The numbers are {} and {}", 42, 1.0/3.0).unwrap();
+}
+
+pub fn clear_vga_buffer() {
+    let vga_buffer = 0xb8000 as *mut u8;
+
+    let num_chars = 80 * 25;
+
+    for i in 0..num_chars {
+        unsafe {
+            *vga_buffer.offset(i as isize * 2) = 0x00;
+            *vga_buffer.offset(i as isize * 2 + 1) = 0x07;
+        }
+    }
 }
